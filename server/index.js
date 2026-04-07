@@ -1,24 +1,29 @@
 const express = require('express');
-const ffmpeg = require('fluent-ffmpeg');
-const path = require('path');
+const { generateLocalSubtitles } = require('./services/localWhisper');
+const router = express.Router();
 
-const app = express();
+router.post('/api/ai/subtitles', async (req, res) => {
+    // В реальности имя файла будет приходить от multer (загрузчика файлов)
+    const { filename } = req.body; 
 
-app.post('/api/edit', (req, res) => {
-    const { inputFile, startTime, duration } = req.body;
+    if (!filename) {
+        return res.status(400).json({ error: "No video file provided" });
+    }
 
-    ffmpeg(path.join(__dirname, 'uploads', inputFile))
-        .setStartTime(startTime)
-        .setDuration(duration)
-        .withVideoCodec('libx264') // Профессиональный кодек
-        .withAudioCodec('aac')
-        .on('end', () => {
-            res.json({ message: 'Editing complete', file: 'output.mp4' });
-        })
-        .on('error', (err) => {
-            res.status(500).json({ error: err.message });
-        })
-        .save(path.join(__dirname, 'processed', 'output.mp4'));
+    try {
+        const result = await generateLocalSubtitles(filename);
+        
+        // Возвращаем результат на фронтенд
+        res.json({
+            message: "Subtitles generated successfully",
+            data: result.text,
+            // Можно прочитать готовый SRT и отправить его текстом
+            srtContent: require('fs').readFileSync(result.file, 'utf8') 
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: "AI Processing Failed" });
+    }
 });
 
-app.listen(5000, () => console.log('AI Video Processor running on port 5000'));
+module.exports = router;
