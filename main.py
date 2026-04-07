@@ -5,6 +5,8 @@ import whisper
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
 from telegram import Bot
 import asyncio
+from processor import process_video_logic
+
 
 # 1. МОНИТОРИНГ RSS
 def get_latest_video(rss_url):
@@ -60,7 +62,8 @@ async def main():
     path = download_video(video_url)
     
     print("Нейронка обрабатывает видео...")
-    final_path = process_video(path)
+    final_path = process_video_logic(path)
+
     
     print("Отправляю в Telegram...")
     await send_to_tg(final_path)
