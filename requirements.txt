@@ -1,6 +1,6 @@
 yt-dlp
 openai-whisper
-moviepy
+moviepy==1.0.3
 python-dotenv
 python-telegram-bot
 feedparser
