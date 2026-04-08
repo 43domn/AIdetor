@@ -22,9 +22,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg imagemagick
 
-      - name: Install Python dependencies
+            - name: Install Python dependencies
         run: |
-          pip install yt-dlp openai-whisper moviepy python-dotenv python-telegram-bot feedparser torch
+          pip install --upgrade pip
+          pip install yt-dlp openai-whisper moviepy==1.0.3 python-dotenv python-telegram-bot feedparser torch
+
 
       - name: Run Script
         env:
