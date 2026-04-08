@@ -5,7 +5,7 @@ import moviepy.video.fx.all as vfx
 def process_video_logic(input_path, output_path="result_tiktok.mp4"):
     # 1. Загружаем модель Whisper
     # 'base' — оптимально по скорости/качеству. 'tiny' — если будет тормозить.
-    model = whisper.load_model("base")
+    model = whisper.load_model("tiny")
     print("Распознаю речь...")
     result = model.transcribe(input_path, language="ru") # или "uk" для укр. выпуска
     
